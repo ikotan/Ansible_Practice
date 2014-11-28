@@ -1,0 +1,20 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: add a new user
+      user: name=test_user
+    - name: install libselinux-python
+      yum: name=libselinux-python state=latest
+
+- hosts: node1
+  sudo: yes
+  tasks:
+    - name: install apache
+      yum: name=httpd state=latest
+    - name: start apache and enabled
+      service: name=httpd state=started enabled=yes
+    - name: change owner
+      file: dest=/var/www/html owner=vagrant recurse=yes
+    - name: copy index.html
+      copy: src=./index.html dest=/var/www/html/index.html owner=vagrant

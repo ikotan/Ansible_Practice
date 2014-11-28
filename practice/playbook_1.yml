@@ -1,0 +1,8 @@
+---
+- hosts: all
+  sudo: yes
+  vars:
+    username: test_user
+  tasks:
+    - name: add a new user
+      user: name={{username}}

@@ -1,0 +1,14 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: add a new user
+      user: name=test_user
+
+- hosts: node1
+  sudo: yes
+  tasks:
+    - name: install apache
+      yum: name=httpd state=latest
+    - name: start apache and enabled
+      service: name=httpd state=started enabled=yes
