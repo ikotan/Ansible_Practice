@@ -4,5 +4,4 @@ user: 'vagrant'
 home: '/home/vagrant'
 git_version: "1.9.0"
 git_path: '/usr/local/bin/git'
-rbenv_path: '{{ home }}/.rbenv/bin/rbenv'
 ruby_version: "2.1.1"

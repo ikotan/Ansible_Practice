@@ -11,11 +11,21 @@
     - ruby
 
 - name: add rbenv path to bashrc
-  shell: echo 'export PATH="$HOME/.rbenv/bin:$PATH" eval "$(rbenv init -)"' >> {{ home }}/.bashrc
+  shell: echo 'export PATH="$HOME/.rbenv/bin:$PATH"  && eval "$(rbenv init -)"' >> {{ home }}/.bashrc
   tags:
     - ruby
 
 - name: install ruby version {{ ruby_version }}
-  shell: rbenv install -v {{ ruby_version }} executable={{ home }}/.rbenv/bin/rbenv
+  shell: /home/vagrant/.rbenv/bin/rbenv install -v {{ ruby_version }}
+  tags:
+    - ruby
+
+- name: version specified to be used
+  shell: /home/vagrant/.rbenv/bin/rbenv global {{ ruby_version }}
+  tags:
+    - ruby
+
+- name: rbenv rehash
+  shell: /home/vagrant/.rbenv/bin/rbenv rehash
   tags:
     - ruby
