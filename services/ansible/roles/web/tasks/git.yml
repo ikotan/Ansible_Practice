@@ -1,0 +1,28 @@
+---
+- name: install packages necessary to git
+  yum: name={{ item }} state=present
+  with_items:
+    - gcc
+    - curl-devel
+    - expat-devel
+    - gettext-devel
+    - openssl-devel
+    - zlib-devel
+    - perl-ExtUtils-MakeMaker
+  tags:
+    - git
+
+- name: dowload git
+  get_url: url=https://git-core.googlecode.com/files/git-{{ git_version }}.tar.gz dest=/usr/local/src/git-{{git_version}}.tar.gz
+  tags:
+    - git
+
+- name: decompression of git
+  shell: tar xfC /usr/local/src/git-{{ git_version }}.tar.gz /usr/local/src/
+  tags:
+    - git
+
+- name: make install git
+  shell: cd /usr/local/src/git-{{ git_version }} && ./configure && make && sudo make install
+  tags:
+    - git

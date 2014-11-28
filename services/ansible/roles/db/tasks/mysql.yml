@@ -1,0 +1,8 @@
+---
+- name: install mysql
+  yum: name={{ item }} start=latest
+  with_items:
+    - mysql-server
+
+- name: start mysql and enabled
+  service: name=mysqld state=started enabled=yes

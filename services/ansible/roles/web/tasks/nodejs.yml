@@ -1,0 +1,24 @@
+---
+
+- name: install perl
+  yum: name={{ item }} state=present
+  with_items:
+    - perl
+  tags:
+    - nodejs
+
+- name: download nodebrew
+  get_url: url="http://git.io/nodebrew" dest=/usr/local/src/nodebrew
+  tags:
+    - nodejs
+
+- name: install nodebrew
+  shell: perl /usr/local/src/nodebrew setup
+  tags:
+    - nodejs
+
+- name: rewrite .bashrc for export path
+  shell: echo export PATH={{ home }}/.nodebrew/current/bin:$PATH >> {{ home }}/.bashrc
+  tags:
+    - nodejs
+
