@@ -9,6 +9,7 @@
   yum: name={{ item }} state=latest
   with_items:
     - gcc
+    - vim
     - libselinux-python
   sudo: yes
   tags:

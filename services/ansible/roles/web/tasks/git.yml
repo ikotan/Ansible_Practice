@@ -1,5 +1,5 @@
 ---
-- name: install packages necessary to git
+- name: install packages necessary git
   yum: name={{ item }} state=present
   with_items:
     - gcc
@@ -11,6 +11,7 @@
     - perl-ExtUtils-MakeMaker
   sudo: yes
   tags:
+    - package
     - git
 
 - name: dowload git
@@ -19,7 +20,7 @@
   tags:
     - git
 
-- name: decompression of git
+- name: unzip git
   shell: tar xfC /usr/local/src/git-{{ git_version }}.tar.gz /usr/local/src/
   sudo: yes
   tags:

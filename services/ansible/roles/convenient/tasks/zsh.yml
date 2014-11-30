@@ -1,0 +1,30 @@
+---
+- name: download zsh
+  get_url: url=http://sourceforge.net/projects/zsh/files/zsh/{{ zsh_version }}/zsh-{{ zsh_version }}.tar.gz/download dest=/usr/local/src/zsh-{{ zsh_version }}.tar.gz
+  sudo: yes
+  tags:
+    - zsh
+
+- name: unzip zsh
+  shell: tar xfC /usr/local/src/zsh-{{ zsh_version }}.tar.gz /usr/local/src
+  sudo: yes
+  tags:
+    - zsh
+
+- name: make install zsh
+  shell: cd /usr/local/src/zsh-{{ zsh_version }} && ./configure --prefix=/usr/local && make && make install
+  sudo: yes
+  tags:
+    - zsh
+
+- name: add zsh path
+  shell: echo '/usr/local/bin/zsh' >> /etc/shells
+  sudo: yes
+  tags:
+    - zsh
+
+- name: change shell to zsh
+  user: name={{ user }} shell=/usr/local/bin/zsh state=present
+  sudo: yes
+  tags:
+    - zsh

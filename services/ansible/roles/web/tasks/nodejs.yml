@@ -1,14 +1,16 @@
 ---
-
 - name: install perl
   yum: name={{ item }} state=present
   with_items:
     - perl
+  sudo: yes
   tags:
+    - package
     - nodejs
 
 - name: download nodebrew
   get_url: url="http://git.io/nodebrew" dest=/usr/local/src/nodebrew
+  sudo: yes
   tags:
     - nodejs
 
@@ -17,8 +19,19 @@
   tags:
     - nodejs
 
-- name: rewrite .bashrc for export path
-  shell: echo export PATH={{ home }}/.nodebrew/current/bin:$PATH >> {{ home }}/.bashrc
+- name: add nodebrew path to shell
+  shell: echo export PATH={{ home }}/.nodebrew/current/bin:$PATH >> {{ home }}/.{{ shell_name }}
+  tags:
+    - nodejs
+
+- name: install nodebrew {{ nodejs_version }}
+  shell: nodebrew install-binary v{{ nodejs_version }}
+  ignore_errors: true
+  tags:
+    - nodejs
+
+- name: use {{ nodejs_version }}
+  shell: nodebrew use v{{ nodejs_version }}
   tags:
     - nodejs
 
