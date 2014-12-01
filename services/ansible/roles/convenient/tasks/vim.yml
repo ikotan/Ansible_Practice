@@ -1,0 +1,41 @@
+---
+- name: uninstall package to vim
+  yum: name={{ item }} state=absent
+  with_items:
+    - vim-enhanced
+  sudo: yes
+  tags:
+    - vim
+
+- name: install packages necessary vim
+  yum: name={{ item }} state=latest
+  with_items:
+    - mercurial
+    - ncurses-devel
+  sudo: yes
+  tags:
+    - packages
+    - vim
+
+- name: checkout vim
+  hg: repo=https://vim.googlecode.com/hg/ dest=/usr/local/src/vim
+  sudo: yes
+  tags:
+    - vim
+
+- name: update vim
+  shell: cd /usr/local/src/vim && hg update v{{ vim_version }}
+  sudo: yes
+  tags:
+    - vim
+
+- name: install vim
+  shell: cd /usr/local/src/vim && ./configure --enable-multibyte --with-features=huge --disable-selinux --prefix=/usr/local && make && make install
+  sudo: yes
+  tags:
+    - vim
+
+- name: add path vim to shell
+  shell: echo 'export PATH="$PATH":/usr/local/bin/vim' >> {{ home }}/.{{ shell_name }}
+  tags:
+    - vim

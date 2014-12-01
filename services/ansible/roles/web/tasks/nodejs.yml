@@ -20,7 +20,7 @@
     - nodejs
 
 - name: add nodebrew path to shell
-  shell: echo export PATH={{ home }}/.nodebrew/current/bin:$PATH >> {{ home }}/.{{ shell_name }}
+  shell: echo 'export PATH="$HOME"/.nodebrew/current/bin:"$PATH"' >> {{ home }}/.{{ shell_name }}
   tags:
     - nodejs
 
