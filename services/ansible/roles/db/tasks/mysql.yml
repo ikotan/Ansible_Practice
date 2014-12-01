@@ -1,8 +1,36 @@
 ---
+- name: download mysql
+  shell: |
+    if [ ! -s {{ mysql_targz }} ]; then
+      wget http://dev.mysql.com/get/Downloads/MySQL-5.5/{{ mysql_targz }}
+    fi
+  sudo: yes
+  tags:
+    - mysql
+
+- name: unzip mysql
+  shell: |
+    if [ -s {{ mysql_targz }} ]; then
+      tar xfC {{ mysql_targz }} ./
+    fi
+  sudo: yes
+  tags:
+    - mysql
+
 - name: install mysql
-  yum: name={{ item }} start=latest
+  shell: yum localinstall -y {{ item }}
   with_items:
-    - mysql-server
+    - MySQL-shared-compat-5.5.38-1.linux2.6.x86_64.rpm
+    - MySQL-shared-5.5.38-1.linux2.6.x86_64.rpm
+    - MySQL-server-5.5.38-1.linux2.6.x86_64.rpm
+    - MySQL-client-5.5.38-1.linux2.6.x86_64.rpm
+    - MySQL-devel-5.5.38-1.linux2.6.x86_64.rpm
+  sudo: yes
+  tags:
+    - mysql
 
 - name: start mysql and enabled
-  service: name=mysqld state=started enabled=yes
+  service: name=mysql state=started enabled=yes
+  sudo: yes
+  tags:
+    - mysql

@@ -1,0 +1,6 @@
+---
+# user: 'hermes'
+user: 'vagrant'
+home: '/home/vagrant'
+mysql_version: "5.5.38"
+mysql_targz: 'MySQL-5.5.38-1.linux2.6.x86_64.rpm-bundle.tar'
