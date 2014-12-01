@@ -14,7 +14,7 @@
     - package
     - git
 
-- name: dowload git
+- name: download git
   get_url: url=https://git-core.googlecode.com/files/git-{{ git_version }}.tar.gz dest=/usr/local/src/git-{{git_version}}.tar.gz
   sudo: yes
   tags:

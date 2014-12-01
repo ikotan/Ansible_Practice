@@ -2,3 +2,4 @@
 - include: tmux.yml
 - include: zsh.yml
 - include: vim.yml
+- include: git-flow.yml
