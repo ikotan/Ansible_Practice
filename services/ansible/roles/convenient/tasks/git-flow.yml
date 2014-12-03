@@ -1,33 +1,42 @@
 ---
-- name: download installer.sh
-  shell: wget -q -O - --no-check-certificate https://github.com/nvie/gitflow/raw/develop/contrib/gitflow-installer.sh > gitflow-installer.sh
-  tags:
-    - git-flow
-
-- name: clone gitflow
-  shell: |
-    if [ ! -d $HOME/gitflow ]; then
-      git clone https://github.com/nvie/gitflow.git && rmdir gitflow/shFlags
-    fi
-  tags:
-    - git-flow
-
-- name: clone shFlags
-  shell: |
-    if [ ! -d $HOME/gitflow/shFlags ]; then
-      git clone https://github.com/nvie/shFlags.git && mv shFlags/ gitflow/
-    fi
-  tags:
-    - git-flow
-
-
-- name: add path git-flow to shell
-  shell: echo 'export PATH=$PATH:$HOME/.gitflow' >> {{ home }}/.{{ shell_name }}
-  tags:
-    - git-flow
-
+# necessary to epel
 - name: install git-flow
-  shell: bash gitflow-installer.sh
+  yum: name={{ item }} state=latest
+  with_items:
+    - gitflow
   sudo: yes
   tags:
     - git-flow
+
+# - name: download installer.sh
+  # shell: wget -q -O - --no-check-certificate https://github.com/nvie/gitflow/raw/develop/contrib/gitflow-installer.sh > gitflow-installer.sh
+  # tags:
+    # - git-flow
+
+# - name: clone gitflow
+  # shell: |
+    # if [ ! -d $HOME/gitflow ]; then
+      # git clone https://github.com/nvie/gitflow.git && rmdir gitflow/shFlags
+    # fi
+  # tags:
+    # - git-flow
+
+# - name: clone shFlags
+  # shell: |
+    # if [ ! -d $HOME/gitflow/shFlags ]; then
+      # git clone https://github.com/nvie/shFlags.git && mv shFlags/ gitflow/
+    # fi
+  # tags:
+    # - git-flow
+
+
+# - name: add path git-flow to shell
+  # shell: echo 'export PATH=$PATH:$HOME/.gitflow' >> {{ home }}/.{{ shell_name }}
+  # tags:
+    # - git-flow
+
+# - name: install git-flow
+  # shell: bash gitflow-installer.sh
+  # sudo: yes
+  # tags:
+    # - git-flow
