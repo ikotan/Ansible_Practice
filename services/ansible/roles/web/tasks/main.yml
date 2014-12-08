@@ -1,5 +1,6 @@
 ---
 - include: git.yml
 - include: nginx.yml
+- include: nginx_ldap.yml
 - include: nodejs.yml
 - include: ruby.yml

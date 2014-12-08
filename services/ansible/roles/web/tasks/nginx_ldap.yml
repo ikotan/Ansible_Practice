@@ -1,0 +1,56 @@
+---
+# - name: create user nginx
+  # user: name=nginx shell=/sbin/nologin createhome=no
+  # sudo: yes
+  # tags:
+    # - user
+    # - nginx
+
+- name: install packages necessary nginx
+  yum: name={{ item }} state=present
+  with_items:
+    - gcc
+    - wget
+    - lua
+    - lua-devel
+    - lua-static
+    - pcre
+    - pcre-devel
+    - openssl
+    - openssl-devel
+    - openldap
+    - openldap-clients
+    - openldap-servers
+    - openldap-servers-sql
+    - openldap-devel
+  sudo: yes
+  tags:
+    - package
+    - nginx
+    - nginx-ldap
+
+- name: download nginx
+  get_url: url=http://openresty.org/download/ngx_openresty-{{ nginx_ldap_version }}.tar.gz dest=/usr/local/src
+  sudo: yes
+  tags:
+    - nginx-ldap
+
+- name: install nginx
+  shell: tar xfC /usr/local/src/ngx_openresty-{{ nginx_ldap_version }}.tar.gz /usr/local/src
+  sudo: yes
+  tags:
+    - nginx-ldap
+
+- name: clone nginx-auth-ldap
+  shell: cd /usr/local/src && /usr/local/bin/git clone https://github.com/kvspb/nginx-auth-ldap.git
+  sudo: yes
+  tags:
+    - nginx-ldap
+
+- name: compile nginx-ldap
+  shell: cd /usr/local/src/ngx_openresty-{{ nginx_ldap_version }} &&
+    ./configure --prefix=/usr/local/openresty-{{ nginx_ldap_version }} --with-luajit --add-module=../nginx-auth-ldap
+    && make && make install
+  sudo: yes
+  tags:
+    - nginx-ldap
