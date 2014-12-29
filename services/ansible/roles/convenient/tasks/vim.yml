@@ -12,6 +12,7 @@
   with_items:
     - mercurial
     - ncurses-devel
+    - ctags 
   sudo: yes
   tags:
     - packages

@@ -1,2 +1,4 @@
 ---
 - include: mysql.yml
+- include: redis.yml
+- include: mongodb.yml

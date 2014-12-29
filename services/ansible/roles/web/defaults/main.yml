@@ -8,3 +8,4 @@ git_path: '/usr/local/bin/git'
 nginx_ldap_version: "1.4.3.9"
 ruby_version: "2.1.1"
 nodejs_version: "0.11.10"
+perl_version: "5.16.3"

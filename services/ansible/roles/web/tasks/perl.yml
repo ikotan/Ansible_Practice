@@ -1,0 +1,29 @@
+---
+- name: install perlbrew
+  shell: curl -L http://xrl.us/perlbrewinstall | bash
+  tags:
+    - perl
+
+- name: add perlbrew path to shell
+  shell: echo 'source $HOME/perl5/perlbrew/etc/bashrc' >> {{ home }}/.{{ shell_name }}
+  tags:
+    - perl
+
+- name: install perl {{perl_version}}
+  shell: source ~/perl5/perlbrew/etc/bashrc && perlbrew install perl-{{perl_version}}
+  tags:
+    - perl
+
+- name: change perl {{perl_version}}
+  shell: source ~/perl5/perlbrew/etc/bashrc && perlbrew switch perl-{{perl_version}}
+  tags:
+    - perl
+
+- name: install cpanm 
+  shell: source ~/perl5/perlbrew/etc/bashrc && perlbrew install-cpanm 
+  tags:
+    - perl
+
+
+
+

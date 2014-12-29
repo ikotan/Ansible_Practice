@@ -2,8 +2,8 @@
 - name: upgrade all packages
   yum: name=* state=latest
   sudo: yes
-  # tags:
-    # - package
+  tags:
+    - package
 
 - name: install packages
   yum: name={{ item }} state=latest

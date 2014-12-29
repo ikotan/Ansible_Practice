@@ -1,0 +1,14 @@
+- name: install mongodb
+  yum: name={{ item }} state=present
+  with_items:
+    - mongodb
+    - mongodb-server
+  sudo: yes
+  tags:
+    - mongodb
+
+- name: start mongodb and enabled
+  service: name=mongod state=started enabled=yes
+  sudo: yes
+  tags:
+    - mongodb
