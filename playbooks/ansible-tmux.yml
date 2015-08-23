@@ -1,0 +1,53 @@
+---
+- hosts: target
+  sudo: yes
+  vars:
+    common:
+      path: "/usr/local/src"
+    libevent:
+      version: "2.0.21-stable"
+    tmux:
+      bin: "/usr/local/bin/tmux"
+      version: "1.9"
+
+  tasks:
+  - name: install packages of tmux
+    yum: name={{ item }} state=present
+    with_items:
+      - wget
+      - gcc 
+      - make
+      - ncurses
+      - ncurses-devel 
+      - libevent-devel
+
+  - name: exist libevent
+    stat: path="{{common.path}}/libevent-{{libevent.version}}"
+    register: exist_libevent
+
+  - name: download and unzip libevent
+    when: not exist_libevent.stat.exists
+    shell: curl -L https://github.com/downloads/libevent/libevent/libevent-{{libevent.version}}.tar.gz -o {{common.path}}/libevent-{{libevent.version}}.tar.gz \
+      && tar xfC {{common.path}}/libevent-{{libevent.version}}.tar.gz {{common.path}}
+
+  - name: make install libevent
+    when: not exist_libevent.stat.exists
+    shell: cd {{common.path}}/libevent-{{libevent.version}} && ./configure --prefix=/usr/local && make && make install
+
+  - name: exist tmux
+    stat: path="{{tmux.bin}}"
+    register: exist_tmux
+
+  - name: download tmux
+    when: not exist_tmux.stat.exists
+    get_url: url=http://sourceforge.net/projects/tmux/files/tmux/tmux-1.9/tmux-1.9.tar.gz/download dest={{common.path}}/tmux-{{ tmux.version }}.tar.gz
+
+  - name: unzip tmux
+    when: not exist_tmux.stat.exists
+    shell: tar xfC {{common.path}}/tmux-{{tmux.version}}.tar.gz {{common.path}}
+
+  - name: make install tmux
+    when: not exist_tmux.stat.exists
+    shell: cd {{common.path}}/tmux-{{tmux.version}} \
+      && LDFLAGS="-L/usr/local/lib -Wl,-rpath=/usr/local/lib" ./configure --prefix=/usr/local \
+      && make && sudo make install

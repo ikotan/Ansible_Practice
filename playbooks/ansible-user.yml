@@ -1,0 +1,35 @@
+---
+- hosts: target
+  sudo: yes
+  vars:
+    users:
+      - { name: "test_user", pass: "", key: "" }
+
+  tasks:
+  - name: create new user
+    user: >-
+      name={{ item.name }}
+      password={{ item.pass }}
+      createhome=yes
+      state=present
+    with_items: users
+
+  - name: setup authorized_keys
+    authorized_key: >-
+      user={{ item.name }}
+      key={{ item.key }}
+    with_items: users
+
+  - name: install 'Development tools' package group
+    yum: name="@Development tools" state=present
+
+  - name: install 'libselinux-python' package
+    yum: name=libselinux-python state=latest
+
+  - name: add sudo user
+    lineinfile: >-
+      dest=/etc/sudoers
+      backup=yes
+      create=yes
+      line='{{item.name}} ALL=(ALL) NOPASSWD: ALL'
+    with_items: users

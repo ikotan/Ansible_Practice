@@ -1,0 +1,11 @@
+[develop]
+192.168.55.55
+
+[target]
+192.168.55.55
+
+[develop:vars]
+ansible_ssh_user=vagrant
+
+[target:vars]
+ansible_ssh_user=test_user
