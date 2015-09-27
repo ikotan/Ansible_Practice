@@ -1,0 +1,25 @@
+---
+- hosts: target
+  sudo: yes
+  vars:
+    mysql:
+      version: 5.5
+      revision: 38
+    mysql_shared_compat: http://dev.mysql.com/get/Downloads/MySQL-{{ mysql.version }}/MySQL-shared-compat-{{ mysql.version }}.{{ mysql.revision }}-1.rhel5.x86_64.rpm
+    mysql_shared: http://dev.mysql.com/get/Downloads/MySQL-{{ mysql.version }}/MySQL-shared-{{ mysql.version }}.{{ mysql.revision }}-1.rhel5.x86_64.rpm
+    mysql_client: http://dev.mysql.com/get/Downloads/MySQL-{{ mysql.version }}/MySQL-client-{{ mysql.version }}.{{ mysql.revision }}-1.rhel5.x86_64.rpm
+    mysql_devel: http://dev.mysql.com/get/Downloads/MySQL-{{ mysql.version }}/MySQL-devel-{{ mysql.version }}.{{ mysql.revision }}-1.rhel5.x86_64.rpm
+    mysql_server: http://dev.mysql.com/get/Downloads/MySQL-{{ mysql.version }}/MySQL-server-{{ mysql.version }}.{{ mysql.revision }}-1.rhel5.x86_64.rpm
+
+  tasks:
+  - name: mysql install
+    yum: name={{item}} state=present
+    with_items:
+      - "{{mysql_shared_compat}}"
+      - "{{mysql_shared}}"
+      - "{{mysql_client}}"
+      - "{{mysql_devel}}"
+      - "{{mysql_server}}"
+
+  - name: mysql boot And restart
+    service: name=mysql enabled=yes state=restarted
