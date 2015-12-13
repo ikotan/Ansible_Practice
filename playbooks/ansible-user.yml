@@ -1,9 +1,8 @@
 ---
-- hosts: target
+- hosts: vagrant
   sudo: yes
-  vars:
-    users:
-      - { name: "test_user", pass: "", key: "" }
+  vars_files:
+    - users.yml
 
   tasks:
   - name: create new user
@@ -14,10 +13,14 @@
       state=present
     with_items: users
 
+  - name: create ssh directory
+    file: path=/home/{{ item.name }}/.ssh state=directory owner={{ item.name }} group=users mode=700
+    with_items: users
+
   - name: setup authorized_keys
     authorized_key: >-
       user={{ item.name }}
-      key={{ item.key }}
+      key="{{ item.key }}"
     with_items: users
 
   - name: install 'Development tools' package group
