@@ -1,0 +1,40 @@
+---
+- hosts: target
+  sudo: yes
+  vars:
+    common:
+      path: "/tmp"
+    vim:
+      bin: "/usr/local/bin/vim"
+
+  tasks:
+  - name: install packages of vim
+    yum: name={{item}} state=present
+    with_items:
+      - mercurial
+      - ncurses-devel
+      - lua-devel
+      - perl-ExtUtils-Embed
+
+  - name: remove packages of vim
+    yum: name=vim-enhanced state=absent
+
+  - name: exist vim
+    stat: path="{{vim.bin}}"
+    register: exist_vim
+
+  - name: download vim
+    when: not exist_vim.stat.exists
+    hg: repo=https://vim.googlecode.com/hg/ dest={{common.path}}/vim purge=yes
+
+  - name: make install vim
+    when: not exist_vim.stat.exists
+    shell: cd {{common.path}}/vim \
+      && ./configure \
+        --with-features=huge \
+        --enable-multibyte \
+        --enable-luainterp \
+        --enable-gpm \
+        --enable-cscope \
+        --enable-fontset \
+      && make && sudo make install

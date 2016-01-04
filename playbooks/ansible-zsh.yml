@@ -1,0 +1,53 @@
+---
+- hosts: target
+  sudo: yes
+  vars:
+    user: "test_user"
+    zsh:
+      bin: "/usr/local/bin/zsh"
+      version: "5.0.7"
+      path: "/tmp"
+
+  tasks:
+  - name: install packages of zsh
+    yum: name={{item}} state=present
+    with_items:
+      - ncurses-devel 
+
+  - name: exist libevent
+    stat: path="{{zsh.path}}/zsh-{{zsh.version}}"
+    register: exist_zsh
+
+  - name: download zsh
+    when: not exist_zsh.stat.exists
+    get_url: url=http://jaist.dl.sourceforge.net/sourceforge/zsh/zsh-{{zsh.version}}.tar.gz dest={{zsh.path}}/zsh-{{zsh.version}}.tar.gz
+    tags:
+      - zsh
+
+  - name: unzip zsh
+    when: not exist_zsh.stat.exists
+    unarchive: src={{zsh.path}}/zsh-{{zsh.version}}.tar.gz dest={{zsh.path}} copy=no
+    tags:
+      - zsh
+
+  - name: make install zsh
+    when: not exist_zsh.stat.exists
+    shell: cd {{zsh.path}}/zsh-{{zsh.version}} && ./configure && make && sudo make install
+    tags:
+      - zsh
+
+  - name: add zsh path to shell
+    when: not exist_zsh.stat.exists
+    lineinfile: >
+      dest=/etc/shells
+      state=present
+      line="{{zsh.bin}}"
+    tags:
+      - zsh
+
+  - name: change shell to zsh
+    when: not exist_zsh.stat.exists
+    user: name={{user}} shell={{zsh.bin}} state=present
+    sudo: yes
+    tags:
+      - zsh
