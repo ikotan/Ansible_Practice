@@ -1,0 +1,71 @@
+---
+- hosts: target
+  vars:
+    shell: ".zshrc"
+    nodejs:
+      version: "5.4.0"
+      install_path: "/tmp"
+
+  tasks:
+  - name: install dependencies for nodebrew
+    sudo: yes
+    yum: name={{item}} state=latest
+    with_items:
+      - git
+      - perl
+    tags:
+      - nodejs
+
+  - name: install nodebrew script
+    get_url: url=http://git.io/nodebrew dest={{nodejs.install_path}}
+    tags:
+      - nodejs
+
+  - name: stat nodebrew
+    stat: path={{nodejs.install_path}}/nodebrew
+    register: nodebrew_stat
+    tags:
+      - nodejs
+
+  - name: "check if {{nodejs.version}} is installed"
+    shell: nodebrew list | grep {{nodejs.version}}
+    register: nodejs_check_install
+    changed_when: False
+    ignore_errors: True
+    tags:
+      - nodejs
+
+  - name: install nodebrew
+    shell: perl {{nodejs.install_path}}/nodebrew setup
+    when: nodejs_check_install|failed
+    tags:
+      - nodejs
+
+  - name: add nodebrew path to shell
+    lineinfile: >
+      create=yes
+      dest=~/{{shell}}
+      line='export PATH="$HOME"/.nodebrew/current/bin:"$PATH"'
+    tags:
+      - nodejs
+
+  - name: install nodebrew {{nodejs.version}}
+    shell: ~/.nodebrew/current/bin/nodebrew install-binary v{{nodejs.version}}
+    when: nodejs_check_install|failed
+    tags:
+      - nodejs
+
+  - name: check nodebrew current version is {{nodejs.version}}
+    shell: ~/.nodebrew/current/bin/nodebrew ls | grep current | grep {{nodejs.version}}
+    register: is_used_current_version
+    changed_when: False
+    ignore_errors: True
+    tags:
+     - nodejs
+
+  - name: use {{nodejs.version}}
+    shell: ~/.nodebrew/current/bin/nodebrew use v{{nodejs.version}}
+    when: is_used_current_version|failed
+    changed_when: False
+    tags:
+      - nodejs
