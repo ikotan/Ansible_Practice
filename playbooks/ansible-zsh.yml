@@ -10,9 +10,9 @@
 
   tasks:
   - name: install packages of zsh
-    yum: name={{item}} state=present
+    yum: name={{item}} state=latest
     with_items:
-      - ncurses-devel 
+      - ncurses-devel
 
   - name: exist libevent
     stat: path="{{zsh.path}}/zsh-{{zsh.version}}"

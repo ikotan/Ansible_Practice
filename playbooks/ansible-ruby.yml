@@ -1,0 +1,97 @@
+---
+- hosts: target
+  vars:
+    shell: ".zshrc"
+    ruby:
+      version: "2.3.0"
+    gem:
+      version: "2.5.1"
+
+  tasks:
+  - name: install dependencies for rbenv and ruby-build
+    sudo: yes
+    yum: name={{item}} state=latest
+    with_items:
+      - git
+      - tar
+      - gcc
+      - make
+      - openssl-devel
+      - libyaml-devel
+      - libffi-devel
+      - readline-devel
+      - zlib-devel
+      - gdbm-devel
+      - ncurses-devel
+
+  - name: install rbenv
+    git: repo=https://github.com/sstephenson/rbenv.git dest=~/.rbenv
+    tags:
+      - ruby
+
+  - name: install ruby-build
+    git: repo=https://github.com/sstephenson/ruby-build.git dest=~/.rbenv/plugins/ruby-build
+    tags:
+      - ruby
+
+  - name: add ~.rbenv/bin to PATH
+    lineinfile: >
+      create=yes
+      state=present
+      dest=~/{{shell}}
+      line="export PATH=$HOME/.rbenv/bin:$PATH"
+    tags:
+      - ruby
+
+  - name: eval rbenv init in shell
+    lineinfile: >
+      create=yes
+      state=present
+      dest=~/{{shell}}
+      line='eval "$(rbenv init -)"'
+    tags:
+      - ruby
+
+  - name: check if {{ruby.version}} is installed
+    shell: ~/.rbenv/bin/rbenv versions | grep {{ruby.version}}
+    register: rbenv_check_install
+    changed_when: False
+    ignore_errors: True
+    tags:
+      - ruby
+
+  - name: install ruby version {{ruby.version}}
+    shell: ~/.rbenv/bin/rbenv install -v {{ruby.version}}
+    when: rbenv_check_install|failed
+    tags:
+      - ruby
+
+  - name: check if {{ ruby.version }} is the default ruby version
+    shell: ~/.rbenv/bin/rbenv version | grep {{ ruby.version }}
+    register: rbenv_check_default
+    changed_when: False
+    ignore_errors: True
+    tags:
+      - ruby
+
+  - name: version specified to be used
+    shell: ~/.rbenv/bin/rbenv global {{ ruby.version }}
+    when: rbenv_check_default|failed
+    tags:
+      - ruby
+
+  - name: rbenv rehash
+    shell: ~/.rbenv/bin/rbenv rehash
+    when: rbenv_check_default|failed
+    tags:
+      - ruby
+
+  - name: gem install bundler on rbenv
+    gem:
+      name=bundler
+      state=present
+      executable=~/.rbenv/shims/gem
+      user_install=False
+    when: rbenv_check_default|failed
+    tags:
+      - ruby
