@@ -8,7 +8,7 @@
       version: "2.0.22-stable"
     tmux:
       bin: "/usr/local/bin/tmux"
-      version: "2.1"
+      version: "1.9"
 
   tasks:
   - name: install packages of tmux

@@ -36,7 +36,7 @@
     tags:
       - ruby
 
-  - name: add ~.rbenv/bin to PATH
+  - name: add ~/.rbenv bin to PATH
     lineinfile: >
       create=yes
       state=present
