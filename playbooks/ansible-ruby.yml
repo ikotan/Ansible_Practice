@@ -2,6 +2,8 @@
 - hosts: target
   vars:
     shell: ".zshrc"
+    rbenv:
+      bin: "~/.rbenv/bin/rbenv"
     ruby:
       version: "2.3.0"
     gem:
@@ -53,7 +55,7 @@
       - ruby
 
   - name: check if {{ruby.version}} is installed
-    shell: ~/.rbenv/bin/rbenv versions | grep {{ruby.version}}
+    shell: "{{rbenv.bin}} versions | grep {{ruby.version}}"
     register: rbenv_check_install
     changed_when: False
     ignore_errors: True
@@ -61,13 +63,13 @@
       - ruby
 
   - name: install ruby version {{ruby.version}}
-    shell: ~/.rbenv/bin/rbenv install -v {{ruby.version}}
+    shell: "{{rbenv.bin}} install -v {{ruby.version}}"
     when: rbenv_check_install|failed
     tags:
       - ruby
 
   - name: check if {{ ruby.version }} is the default ruby version
-    shell: ~/.rbenv/bin/rbenv version | grep {{ ruby.version }}
+    shell: "{{rbenv.bin}} version | grep {{ ruby.version }}"
     register: rbenv_check_default
     changed_when: False
     ignore_errors: True
@@ -75,13 +77,13 @@
       - ruby
 
   - name: version specified to be used
-    shell: ~/.rbenv/bin/rbenv global {{ ruby.version }}
+    shell: "{{rbenv.bin}} global {{ ruby.version }}"
     when: rbenv_check_default|failed
     tags:
       - ruby
 
   - name: rbenv rehash
-    shell: ~/.rbenv/bin/rbenv rehash
+    shell: "{{rbnev.bin}} rehash"
     when: rbenv_check_default|failed
     tags:
       - ruby

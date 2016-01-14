@@ -1,0 +1,93 @@
+---
+- hosts: target
+  vars:
+    shell: ".zshrc"
+    plenv:
+      bin: "~/.plenv/bin/plenv"
+    perl:
+      version: "5.8.8"
+
+  tasks:
+  - name: install dependencies for plenv and plenv-build
+    sudo: yes
+    yum: name={{item}} state=latest
+    with_items:
+      - git
+      - tar
+      - gcc
+      - make
+      - openssl-devel
+      - libyaml-devel
+      - libffi-devel
+      - libxml2-devel
+      - readline-devel
+      - zlib-devel
+      - gd-devel
+      - gdbm-devel
+      - ncurses-devel
+      - ImageMagick
+      - ImageMagick-perl
+      - expat-devel
+      - perl-ExtUtils-MakeMaker
+
+  - name: install plenv
+    git: repo=https://github.com/tokuhirom/plenv.git dest=~/.plenv
+    tags:
+      - perl
+
+  - name: install perl-build
+    git: repo=https://github.com/tokuhirom/Perl-Build.git dest=~/.plenv/plugins/perl-build/
+    tags:
+      - perl
+
+  - name: add ~/.plenv bin to PATH
+    lineinfile: >
+      create=yes
+      state=present
+      dest=~/{{shell}}
+      line="export PATH=$HOME/.plenv/bin:$PATH"
+    tags:
+      - perl
+
+  - name: eval plenv init in shell
+    lineinfile: >
+      create=yes
+      state=present
+      dest=~/{{shell}}
+      line='eval "$(plenv init -)"'
+    tags:
+      - perl
+
+  - name: check if {{perl.version}} is installed
+    shell: "{{plenv.bin}} versions | grep {{perl.version}}"
+    register: plenv_check_install
+    changed_when: False
+    ignore_errors: True
+    tags:
+      - perl
+
+  - name: install plenv version {{perl.version}}
+    shell: "{{plenv.bin}} install {{perl.version}}"
+    when: plenv_check_install|failed
+    tags:
+      - perl
+
+  - name: check if {{ perl.version }} is the default plenv version
+    shell: "{{plenv.bin}} version | grep {{ perl.version }}"
+    register: plenv_check_default
+    changed_when: False
+    ignore_errors: True
+    tags:
+      - perl
+
+  - name: version specified to be used
+    shell: "{{plenv.bin}} global {{ perl.version }}"
+    when: plenv_check_default|failed
+    tags:
+      - perl
+
+  - name: cpanm install on plenv
+    shell: "{{plenv.bin}} install-cpanm"
+    when: plenv_check_default|failed
+    tags:
+      - perl
