@@ -1,0 +1,16 @@
+---
+- hosts: target
+  sudo: yes
+
+  tasks:
+  - name: install memcached
+    yum: name={{item}} state=latest
+    with_items:
+      - memcached
+    tags:
+      - memcached
+
+  - name: memcached boot and restart
+    service: name=memcached enabled=yes state=restarted
+    tags:
+      - memcached
