@@ -15,17 +15,25 @@
       - ncurses-devel
       - lua-devel
       - perl-ExtUtils-Embed
+    tags:
+      - vim
 
   - name: remove packages of vim
     yum: name=vim-enhanced state=absent
+    tags:
+      - vim
 
   - name: exist vim
     stat: path="{{vim.bin}}"
     register: exist_vim
+    tags:
+      - vim
 
   - name: download vim
     when: not exist_vim.stat.exists
     hg: repo=https://vim.googlecode.com/hg/ dest={{common.path}}/vim purge=yes
+    tags:
+      - vim
 
   - name: make install vim
     when: not exist_vim.stat.exists
@@ -38,3 +46,5 @@
         --enable-cscope \
         --enable-fontset \
       && make && sudo make install
+    tags:
+      - vim

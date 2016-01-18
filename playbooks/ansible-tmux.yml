@@ -20,31 +20,45 @@
       - ncurses
       - ncurses-devel
       - libevent-devel
+    tags:
+      - tmux
 
   - name: exist libevent
     stat: path="{{common.path}}/libevent-{{libevent.version}}"
     register: exist_libevent
+    tags:
+      - tmux
 
   - name: download and unzip libevent
     when: not exist_libevent.stat.exists
     shell: curl -L http://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-{{libevent.version}}.tar.gz/download -o {{common.path}}/libevent-{{libevent.version}}.tar.gz \
       && tar xfC {{common.path}}/libevent-{{libevent.version}}.tar.gz {{common.path}}
+    tags:
+      - tmux
 
   - name: make install libevent
     when: not exist_libevent.stat.exists
     shell: cd {{common.path}}/libevent-{{libevent.version}} && ./configure --prefix=/usr/local && make && make install
+    tags:
+      - tmux
 
   - name: exist tmux
     stat: path="{{tmux.bin}}"
     register: exist_tmux
+    tags:
+      - tmux
 
   - name: download tmux
     when: not exist_tmux.stat.exists
     get_url: url=https://github.com/tmux/tmux/releases/download/{{tmux.version}}/tmux-{{tmux.version}}.tar.gz dest={{common.path}}/tmux-{{tmux.version}}.tar.gz
+    tags:
+      - tmux
 
   - name: unzip tmux
     when: not exist_tmux.stat.exists
     shell: tar xfC {{common.path}}/tmux-{{tmux.version}}.tar.gz {{common.path}}
+    tags:
+      - tmux
 
   - name: make install tmux
     when: not exist_tmux.stat.exists

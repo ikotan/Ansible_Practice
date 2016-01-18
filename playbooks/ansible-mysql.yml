@@ -20,6 +20,10 @@
       - "{{mysql_client}}"
       - "{{mysql_devel}}"
       - "{{mysql_server}}"
+    tags:
+      - mysql
 
   - name: mysql boot And restart
     service: name=mysql enabled=yes state=restarted
+    tags:
+      - mysql

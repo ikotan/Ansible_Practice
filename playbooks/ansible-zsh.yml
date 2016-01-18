@@ -13,10 +13,14 @@
     yum: name={{item}} state=latest
     with_items:
       - ncurses-devel
+    tags:
+      - zsh
 
   - name: exist libevent
     stat: path="{{zsh.path}}/zsh-{{zsh.version}}"
     register: exist_zsh
+    tags:
+      - zsh
 
   - name: download zsh
     when: not exist_zsh.stat.exists

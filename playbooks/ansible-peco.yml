@@ -1,6 +1,5 @@
 ---
 - hosts: target
-  sudo: yes
   vars:
     path: "/tmp"
     file_name: "peco_linux_amd64"
@@ -8,10 +7,16 @@
   tasks:
   - name: install peco
     get_url: url=https://github.com/peco/peco/releases/download/v0.2.9/peco_linux_amd64.tar.gz dest={{path}}
+    tags:
+      - peco
 
   - name: unzip peco
     unarchive: src={{path}}/{{file_name}}.tar.gz dest={{path}}
+    tags:
+      - peco
 
   - name: path to peco
-    shell: mv {{path}}/{{file_name}}/peco /usr/local/bin
     sudo: yes
+    shell: mv {{path}}/{{file_name}}/peco /usr/local/bin
+    tags:
+      - peco

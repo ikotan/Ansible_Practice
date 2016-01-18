@@ -8,5 +8,5 @@
   tasks:
   - name: install epel
     yum: name={{epel.url}}
-
-
+    tags:
+      - epel
