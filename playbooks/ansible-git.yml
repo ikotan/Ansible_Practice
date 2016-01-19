@@ -1,0 +1,44 @@
+---
+- hosts: target
+  vars:
+    git:
+      version: "2.7.0"
+      prefix: "/usr/local"
+      path: "/tmp"
+
+  tasks:
+  - name: uninstall git
+    sudo: yes
+    yum: name=git state=absent
+    tags:
+      - git
+
+  - name: install packages of git
+    sudo: yes
+    yum: name={{item}} state=present
+    with_items:
+      - curl-devel
+      - expat-devel
+      - gettext-devel
+      - openssl-devel
+      - zlib-devel
+      - perl-ExtUtils-MakeMaker
+    tags:
+      - git
+
+  - name: download git
+    get_url: url=https://www.kernel.org/pub/software/scm/git/git-{{git.version}}.tar.gz dest={{git.path}}
+    tags:
+      - git
+
+  - name: unzip git
+    shell: tar -zxvf {{git.path}}/git-{{git.version}}.tar.gz -C {{git.path}}
+    tags:
+      - git
+
+  - name: make to git
+    sudo: yes
+    shell: cd {{git.path}}/git-{{git.version}} \
+      && make prefix={{git.prefix}} all && make prefix={{git.prefix}} install
+    tags:
+      - git

@@ -18,7 +18,7 @@
     tags:
       - vim
 
-  - name: remove packages of vim
+  - name: uninstall vim
     yum: name=vim-enhanced state=absent
     tags:
       - vim
