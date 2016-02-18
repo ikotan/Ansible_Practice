@@ -14,5 +14,7 @@
       - libselinux-python
       - gitflow
       - ctags
+      - dstat
+      - telnet
     tags:
       - package
