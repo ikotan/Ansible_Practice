@@ -1,0 +1,21 @@
+---
+- hosts: target
+  sudo: yes
+
+  tasks:
+  - name: copy mongodb.repo
+    copy: src=files/mongodb/mongodb.repo dest=/etc/yum.repos.d/mongodb.repo owner=root
+    tags:
+      - mongodb
+
+  - name: install mongodb
+    yum: name={{item}} state=latest
+    with_items:
+      - mongodb-org
+    tags:
+      - mongodb
+
+  - name: mongodb boot and restart
+    service: name=mongod enabled=yes state=restarted
+    tags:
+      - mongodb
