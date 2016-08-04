@@ -16,5 +16,6 @@
       - ctags
       - dstat
       - telnet
+      - docker
     tags:
       - package

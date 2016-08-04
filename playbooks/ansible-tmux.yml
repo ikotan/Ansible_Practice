@@ -8,7 +8,7 @@
       version: "2.0.22-stable"
     tmux:
       bin: "/usr/local/bin/tmux"
-      version: "1.9"
+      version: "2.2"
 
   tasks:
   - name: install packages of tmux
@@ -29,10 +29,16 @@
     tags:
       - tmux
 
-  - name: download and unzip libevent
+  - name: download libevent
     when: not exist_libevent.stat.exists
-    shell: curl -L http://sourceforge.net/projects/levent/files/libevent/libevent-2.0/libevent-{{libevent.version}}.tar.gz/download -o {{common.path}}/libevent-{{libevent.version}}.tar.gz \
-      && tar xfC {{common.path}}/libevent-{{libevent.version}}.tar.gz {{common.path}}
+    get_url: url="https://github.com/libevent/libevent/releases/download/release-{{libevent.version}}/libevent-{{libevent.version}}.tar.gz"
+      dest={{common.path}}/libevent-{{libevent.version}}.tar.gz
+    tags:
+      - tmux
+
+  - name: unzip libevent
+    when: not exist_libevent.stat.exists
+    unarchive: src={{common.path}}/libevent-{{libevent.version}}.tar.gz dest={{common.path}} copy=no
     tags:
       - tmux
 
