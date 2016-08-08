@@ -17,5 +17,6 @@
       - dstat
       - telnet
       - docker
+      - the_silver_searcher
     tags:
       - package
