@@ -10,12 +10,7 @@
     tags:
       - aws
 
-  - name: upgrade pip module
-    shell: pip install pip --upgrade
-    tags:
-      - aws
-
-  - name: install aws
-    shell: pip install awscli --user
+  - name: pip upgrade and install aws
+    shell: pip install --upgrade awscli --user
     tags:
       - aws
