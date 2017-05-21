@@ -1,0 +1,21 @@
+---
+- hosts: target
+  sudo: yes
+
+  tasks:
+  - name: install pip
+    yum: name={{item}} state=latest
+    with_items:
+      - python-pip
+    tags:
+      - aws
+
+  - name: upgrade pip module
+    shell: pip install pip --upgrade
+    tags:
+      - aws
+
+  - name: install aws
+    shell: pip install awscli --user
+    tags:
+      - aws

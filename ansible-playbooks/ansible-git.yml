@@ -2,7 +2,7 @@
 - hosts: target
   vars:
     git:
-      version: "2.7.0"
+      version: "2.7.2"
       prefix: "/usr/local"
       path: "/tmp"
 

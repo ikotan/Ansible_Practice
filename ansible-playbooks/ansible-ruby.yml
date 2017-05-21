@@ -5,7 +5,7 @@
     rbenv:
       bin: "~/.rbenv/bin/rbenv"
     ruby:
-      version: "2.3.0"
+      version: "2.2.1"
     gem:
       version: "2.5.1"
 

@@ -30,8 +30,11 @@
       - vim
 
   - name: download vim
-    when: not exist_vim.stat.exists
-    hg: repo=https://vim.googlecode.com/hg/ dest={{common.path}}/vim purge=yes
+    git:
+      repo: https://github.com/vim/vim.git
+      dest: /{{common.path}}/vim
+      version: master
+      accept_hostkey: yes
     tags:
       - vim
 

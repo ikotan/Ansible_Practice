@@ -2,7 +2,7 @@
 - hosts: target
   sudo: yes
   vars:
-    user: "test_user"
+    user: "vagrant"
     zsh:
       bin: "/usr/local/bin/zsh"
       version: "5.1.1"
