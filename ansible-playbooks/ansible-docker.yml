@@ -1,6 +1,9 @@
 ---
 - hosts: target
   sudo: yes
+  vars:
+    docker_compose:
+      version: "1.13.0"
 
   tasks:
   - name: install docker
@@ -16,6 +19,11 @@
       - docker
 
   - name: install docker-compose
-    shell: curl -L https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+    shell: curl -L https://github.com/docker/compose/releases/download/{{docker_compose.version}}/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+    tags:
+      - docker
+
+  - name: execution permission
+    shell: chmod +x /usr/local/bin/docker-compose
     tags:
       - docker

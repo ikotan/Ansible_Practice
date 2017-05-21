@@ -3,7 +3,7 @@
   vars:
     shell: ".zshrc"
     nodejs:
-      version: "5.4.0"
+      version: "7.10.0"
       install_path: "/tmp"
 
   tasks:
