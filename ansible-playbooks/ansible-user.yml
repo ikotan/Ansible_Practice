@@ -31,13 +31,13 @@
       backup=yes
       create=yes
       line='{{item.name}} ALL=(ALL) NOPASSWD: ALL'
-    with_items: users
+    with_items: "{{ users }}"
     tags:
       - useradd
 
   - name: create ssh directory
     file: path=/home/{{item.name}}/.ssh state=directory owner={{item.name}} group=users mode=700
-    with_items: users
+    with_items: "{{ users }}"
     tags:
       - useradd
 
@@ -45,6 +45,6 @@
     authorized_key: >-
       user={{item.name}}
       key="{{item.key}}"
-    with_items: users
+    with_items: "{{ users }}"
     tags:
       - useradd
